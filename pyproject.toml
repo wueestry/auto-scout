@@ -1,7 +1,7 @@
 [project]
 name = "auto-scout"
 version = "0.1.0"
-description = "Add your description here"
+description = "Automated reconnaissance and scanning framework"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
@@ -12,8 +12,24 @@ dependencies = [
     "survey>=5.4.2",
 ]
 
+[tool.setuptools]
+packages = ["auto_scout"]
+
+[tool.uv.workspace]
+members = [
+    ".",
+]
+
+[tool.uv.sources]
+auto-scout = { workspace = true }
+
+[project.scripts]
+auto-scout = "auto_scout.cli.main:main"
+
 [dependency-groups]
 dev = [
+    "auto-scout",
     "mypy>=1.19.1",
+    "pytest>=8.3.4",
     "ruff>=0.14.11",
 ]

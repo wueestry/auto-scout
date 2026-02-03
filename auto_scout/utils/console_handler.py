@@ -1,4 +1,3 @@
-from auto_scout.utils.nist import NISThtml
 import survey
 from rich.console import Console
 from rich.panel import Panel
@@ -43,29 +42,18 @@ def create_scan_table(cmd: str) -> Table:
     nmap_table.add_column("Port ID", justify="right", style="magenta", no_wrap=True)
     nmap_table.add_column("Service", justify="right", style="green")
     nmap_table.add_column("CPE", justify="right", style="blue")
-    nmap_table.add_column("Advisories", justify="right", style="blue")
     return nmap_table
 
 
 def fill_simple_table(cmd: str, parsed_xml: dict[str, any]) -> Table:
     nmap_table = create_scan_table(cmd=cmd)
-    cpe_details = NISThtml().correlate_nmap_with_nids(parsed_xml=parsed_xml)
     for row_data in parsed_xml:
-        ports = row_data['ports']
+        ports = row_data["ports"]
         for port_data in ports:
-            advisories = []
-            for cpe in port_data['cpes']:
-                if cpe in cpe_details:  # Service may not have an advisory
-                    for nist in cpe_details[cpe]:
-                        advisories.append(
-                            f"[bold][yellow]link={nist.link}[/yellow][/bold], "
-                            f"{nist.summary}, [red]score={nist.score}[/red]"
-                        )
             nmap_table.add_row(
-                port_data['protocol'],
-                port_data['port_id'],
+                port_data["protocol"],
+                port_data["port_id"],
                 f"{port_data['service_name']} {port_data['service_product']} {port_data['service_version']}",
-                "\n".join(port_data['cpes']),
-                "\n".join(advisories)
+                "\n".join(port_data["cpes"]),
             )
     return nmap_table
